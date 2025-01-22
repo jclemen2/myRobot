@@ -29,4 +29,23 @@ def Create_World():
     # Finalize the SDF file
     pyrosim.End()
 
+def Create_Robot():
+    # Start generating the URDF file
+    pyrosim.Start_URDF("body.urdf")
+
+    # set variables size and position
+    length = 1
+    width = 1
+    height = 1
+    x = 2
+    y = -2
+    z = 0.5
+
+    pyrosim.Send_Cube(name="Torso", pos=[x, y, z], size=[length, width, height])
+
+    # Finalize the URDF file
+    pyrosim.End()
+
+
 Create_World()
+Create_Robot()
