@@ -6,7 +6,7 @@ from simulate import frontLegSensorValues
 from simulate import motorTargetAngles_backLeg
 from simulate import motorTargetAngles_frontLeg
 
-# Load the sensor values from the file
+# Load the sensor values from the file.
 data_backLeg = numpy.load("data/backLegSensorValues.npy")
 data_frontLeg = numpy.load("data/frontLegSensorValues.npy")
 data_motorTargetAngles_backLeg = numpy.load("data/motorTargetAngles_backLeg.npy")
