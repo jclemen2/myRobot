@@ -12,7 +12,7 @@ SIMULATION_TIME = 1000
 
 # Variables
 amplitude_backLeg = pi/4
-frequency_backLeg = 12
+frequency_backLeg = 20
 phaseOffset_backLeg = 0
 
 amplitude_frontLeg = 0
@@ -51,14 +51,14 @@ for i in range (SIMULATION_TIME):
         jointName="Torso_BackLeg",  # What joint should the motor be attached to
         controlMode=p.POSITION_CONTROL,  # How the motor will attempt to control the motion of the joint
         targetPosition=motorTargetAngles_backLeg[i],  # Desired position
-        maxForce=100)  # Total torque
+        maxForce=50)  # Total torque
 
     pyrosim.Set_Motor_For_Joint(
         bodyIndex=robotId,  # What robot should the motor be attached to
         jointName="Torso_FrontLeg",  # What joint should the motor be attached to
         controlMode=p.POSITION_CONTROL,  # How the motor will attempt to control the motion of the joint
         targetPosition=motorTargetAngles_frontLeg[i],  # Desired position
-        maxForce=100)  # Total torque
+        maxForce=50)  # Total torque
 
     # Slow the simulation
     time.sleep(1/240)
