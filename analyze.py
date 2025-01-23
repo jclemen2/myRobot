@@ -1,6 +1,7 @@
 import numpy
 import matplotlib.pyplot as plt
 
+
 from simulate import backLegSensorValues
 from simulate import frontLegSensorValues
 from simulate import motorTargetAngles_backLeg
