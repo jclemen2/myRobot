@@ -3,7 +3,7 @@ import pyrosim.pyrosim as pyrosim
 
 def Create_World():
     # Start generating the SDF file
-    pyrosim.Start_SDF("box.sdf")
+    pyrosim.Start_SDF("world.sdf")
 
     # set variables size and position
     length = 1
@@ -58,5 +58,3 @@ def Create_Robot():
 
 Create_World()
 Create_Robot()
-
-
