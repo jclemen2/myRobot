@@ -21,3 +21,4 @@ class SENSOR:
         # If this is the last time step, print the final sensor vector
         if t == c.simulation_time - 1:
             print(self.values)
+
