@@ -1,24 +1,27 @@
 import numpy
-import constants as c
 import pyrosim.pyrosim as pyrosim
+import constants as c
+import os
 
-class SENSOR:
-    def __init__(self, linkName):
-        # Store the link name
+# Define the full path to the data directory
+data_dir = "/Users/justineclement/PycharmProjects/myRobot/data"
+os.makedirs(data_dir, exist_ok=True)
+
+class SENSOR: # name of the class
+    def __init__(self, linkName):  # Constructor
         self.linkName = linkName
-
-        # Initialize a vector of zeros for sensor values
-        self.values = numpy.zeros(c.simulation_time)
+        # Create array to store sensor values
+        self.values = numpy.zeros(c.SIMULATION_TIME)
 
     def Get_Value(self, t):
-        # Fetch the sensor value for the specific link and store it in the t-th index
-        value = pyrosim.Get_Touch_Sensor_Value_For_Link(self.linkName)
-        if len(self.values) <= t:
-            self.values.append(value)  # Add the value if it's the first time this index is being used
-        else:
-            self.values[t] = value  # Update the value at the t-th index
+        # Get sensor values
+        self.values[t] = pyrosim.Get_Touch_Sensor_Value_For_Link(self.linkName)
 
-        # If this is the last time step, print the final sensor vector
-        if t == c.simulation_time - 1:
-            print(self.values)
+    def Save_Values(self):
+        """Saves sensor values to a file."""
+        file_path = os.path.join(data_dir, f"{self.linkName}SensorValues.npy")
+        numpy.save(file_path, self.values)
+        print(f"Saved sensor data: {file_path}")
+
+
 
