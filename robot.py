@@ -1,23 +1,43 @@
 from sensor import SENSOR
+from motor import MOTOR
+
 import pybullet as p
 import pyrosim.pyrosim as pyrosim
 
-class ROBOT:
-    def __init__(self):
+class ROBOT: # name of the class
+    def __init__(self):  # Constructor
         self.robotId = p.loadURDF("body.urdf")
+        pyrosim.Prepare_To_Simulate(self.robotId)
 
-        # Dictionaries to store sensors and motors
-        self.motor = {}
+        # Prepare sensors and motors
+        self.Prepare_To_Sense()
+        self.Prepare_To_Act()
 
     def Prepare_To_Sense(self):
-        # Initialize the sensors dictionary
-        self.sensors = {}
+        # Creates a sensor for each link in the robot
+        self.sensors = {}  # Initialize sensors dictionary
 
-        # Print link names to identify sensor placements
+        # Loop through all link names in the robot
         for linkName in pyrosim.linkNamesToIndices:
-            self.sensors[linkName] = SENSOR(linkName)
+            self.sensors[linkName] = SENSOR(linkName)  # Create sensor instance
+
+    def Prepare_To_Act(self):
+        # Creates a motor for each joint in the robot
+        self.motors = {}  # Initialize sensors dictionary
+
+        # Loop through all joint names in the robot
+        for jointName in pyrosim.jointNamesToIndices:
+            self.motors[jointName] = MOTOR(jointName)  # Create motor instance
 
     def Sense(self, t):
-        # Update sensor values for each sensor and store at the t-th index
-        for linkName, sensor in self.sensors.items():
-            sensor.Get_Value(t)  # Pass time step t to Get_Value method
+        # Reads sensor values for each link at time step t.
+        for sensor in self.sensors.values():
+            sensor.Get_Value(t)  # Pass t to the sensor's Get_Value()
+
+    def Act(self, t):
+        # Applies motor commands at time step t.
+        for motor in self.motors.values():
+            motor.Set_Value(self, t)  # Pass robot instance and time step t
+
+
+
