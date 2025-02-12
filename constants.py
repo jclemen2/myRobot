@@ -1,29 +1,32 @@
 from math import pi
 
 # Variables Time of Simulation
-simulation_time = 100
+SIMULATION_TIME = 1000
 
 # Variables robot
-amplitude_backLeg = pi/4
-frequency_backLeg = 20
-phaseOffset_backLeg = 0
+AMPLITUDE_BACKLEG   = pi/4
+FREQUENCY_BACKLEG = 20
+PHASEOFFSET_BACKLEG = 0
 
-amplitude_frontLeg = 0
-frequency_frontLeg = 0
-phaseOffset_frontLeg = 0
+AMPLITUDE_FRONTLEG = 0
+FREQUENCY_FRONTLEG = 0
+PHASEOFFSET_FRONTLEG = 0
+
+AMPLITUDE = pi/4
+FREQUENCY = 20
+PHASEOFFSET = 0
 
 # Variables gravity
-grav_x = 0
-grav_y = 0
-grav_z = -9.8
+GRAV_X = 0
+GRAV_Y = 0
+GRAV_Z = -9.8
 
 # Variables Array
-start = 0
-step = 2 * pi
+START = 0
+STEP = 2 * pi
 
 # Variables Motor force
-force_motor_backleg = 50
-force_motor_frontleg = 50
+FORCE_MOTOR = 50
 
 # Variables sleeping time of simulation
-sleep = 1/240
+SLEEP = 1/240
