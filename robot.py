@@ -3,9 +3,11 @@ from motor import MOTOR
 
 import pybullet as p
 import pyrosim.pyrosim as pyrosim
+from pyrosim.neuralNetwork import NEURAL_NETWORK
 
 class ROBOT: # name of the class
     def __init__(self):  # Constructor
+        self.nn = NEURAL_NETWORK("brain.nndf")
         self.robotId = p.loadURDF("body.urdf")
         pyrosim.Prepare_To_Simulate(self.robotId)
 
@@ -38,6 +40,11 @@ class ROBOT: # name of the class
         # Applies motor commands at time step t.
         for motor in self.motors.values():
             motor.Set_Value(self, t)  # Pass robot instance and time step t
+
+    def Think(self):
+        self.nn.Update()
+        self.nn.Print()
+
 
 
 
