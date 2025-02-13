@@ -27,6 +27,7 @@ class SIMULATION: # name of the class
         for t in range (steps):
             p.stepSimulation()
             self.robot.Sense(t)  # Robot senses environment
+            self.robot.Think()
             self.robot.Act(t) # Robot acts on environment
             time.sleep(time_step)  # Slow down to visualize steps
 
