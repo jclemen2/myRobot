@@ -1,14 +1,14 @@
 from sensor import SENSOR
 from motor import MOTOR
+from pyrosim.neuralNetwork import NEURAL_NETWORK
 
 import pybullet as p
 import pyrosim.pyrosim as pyrosim
-from pyrosim.neuralNetwork import NEURAL_NETWORK
 
 class ROBOT: # name of the class
     def __init__(self):  # Constructor
-        self.nn = NEURAL_NETWORK("brain.nndf")
         self.robotId = p.loadURDF("body.urdf")
+        self.nn = NEURAL_NETWORK("brain.nndf")
         pyrosim.Prepare_To_Simulate(self.robotId)
 
         # Prepare sensors and motors
@@ -37,9 +37,11 @@ class ROBOT: # name of the class
             sensor.Get_Value(t)  # Pass t to the sensor's Get_Value()
 
     def Act(self, t):
-        # Applies motor commands at time step t.
-        for motor in self.motors.values():
-            motor.Set_Value(self, t)  # Pass robot instance and time step t
+        for neuronName in self.nn.Get_Neuron_Names():
+            if self.nn.Is_Motor_Neuron(neuronName): # Only prints the motor neurons
+                jointName = self.nn.Get_Motor_Neurons_Joint(neuronName)
+                desiredAngle = self.nn.Get_Value_Of(neuronName)
+                self.motors[jointName].Set_Value(self, desiredAngle)
 
     def Think(self):
         self.nn.Update()
