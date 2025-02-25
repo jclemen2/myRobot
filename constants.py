@@ -29,4 +29,4 @@ STEP = 2 * pi
 FORCE_MOTOR = 50
 
 # Variables sleeping time of simulation
-SLEEP = 1/240
+SLEEP = 1/100
