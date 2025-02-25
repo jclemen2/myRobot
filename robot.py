@@ -44,7 +44,3 @@ class ROBOT: # name of the class
     def Think(self):
         self.nn.Update()
         self.nn.Print()
-
-
-
-
