@@ -39,11 +39,24 @@ def Generate_Brain():
     pyrosim.Start_NeuralNetwork("brain.nndf")
 
     # Name neurons with numbers
+    # Create sensor neurons
     pyrosim.Send_Sensor_Neuron(name=0, linkName="Torso")
     pyrosim.Send_Sensor_Neuron(name=1, linkName="BackLeg")
     pyrosim.Send_Sensor_Neuron(name=2, linkName="FrontLeg")
+
+    # Create motor neurons
     pyrosim.Send_Motor_Neuron(name=3, jointName="Torso_BackLeg")
     pyrosim.Send_Motor_Neuron(name=4, jointName="Torso_FrontLeg")
+
+    # Create synapses
+    pyrosim.Send_Synapse(sourceNeuronName=1, targetNeuronName=3,
+                         weight=1.0) # this connects neuron 1 to neuron 3 with a synaptic with weight 1.0.
+    pyrosim.Send_Synapse(sourceNeuronName=2, targetNeuronName=3,
+                         weight=1.0)  # this connects neuron 2 to neuron 3 with a synaptic with weight 1.0.
+    pyrosim.Send_Synapse(sourceNeuronName=1, targetNeuronName=4,
+                         weight=0.5)  # this connects neuron 1 to neuron 4 with a synaptic with weight 1.0.
+    pyrosim.Send_Synapse(sourceNeuronName=2, targetNeuronName=4,
+                         weight=0.0)  # this connects neuron 2 to neuron 4 with a synaptic with weight 1.0.
 
     # Finalize the URDF file
     pyrosim.End()
