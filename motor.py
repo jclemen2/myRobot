@@ -48,5 +48,3 @@ class MOTOR: # name of the class
         file_path = os.path.join(data_dir, f"motorTargetAngles_{self.jointName}.npy")
         numpy.save(file_path, self.motorValues)
         print(f"Saved motor data: {file_path}")
-
-
