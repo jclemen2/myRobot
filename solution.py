@@ -88,3 +88,14 @@ class SOLUTION: # name of the class
 
         # Finalize the URDF file
         pyrosim.End()
+
+    def Mutate(self):
+        # Choose a random row (sensor neuron) and column (motor neuron)
+        randomRow = random.randint(0, 2)  # Randomly pick a sensor neuron
+        randomColumn = random.randint(0, 1)  # Randomly pick a motor neuron
+
+        # Mutate the selected weight to a new random value in [-1,1]
+        self.weights[randomRow, randomColumn] = random.random() * 2 - 1
+
+        # Print mutation details for debugging
+        print(f"Mutated weight at [{randomRow}, {randomColumn}] to {self.weights[randomRow, randomColumn]}")
