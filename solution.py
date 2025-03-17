@@ -11,16 +11,20 @@ class SOLUTION: # name of the class
         # Scale to [-1,1]
         self.weights = self.weights * 2 - 1
 
-    def Evaluate(self):
+    def Evaluate(self, directOrGUI):
         self.Create_World()
         self.Generate_Body()
         self.Generate_Brain()
 
-        os.system("python3 simulate.py")
+        # Run the simulation in the specified mode (DIRECT or GUI)
+        os.system(f"python3 simulate.py {directOrGUI}")
 
         # Read the fitness value from fitness.txt
         with open("fitness.txt", "r") as fitnessFile:
             self.fitness = float(fitnessFile.read().strip())  # Convert string to float
+
+        # Print fitness for debugging
+        print(f"Fitness of current solution ({directOrGUI} mode): {self.fitness}")
 
     def Create_World(self):
         # Start generating the SDF file
