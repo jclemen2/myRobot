@@ -54,5 +54,3 @@ class ROBOT: # name of the class
 
         with open("fitness.txt", "w") as f:
             f.write(str(xCoordinateOfLinkZero))  # Write as string
-
-        exit()
