@@ -1,7 +1,7 @@
 from math import pi
 
 # Variables Time of Simulation
-SIMULATION_TIME = 200
+SIMULATION_TIME = 1000
 
 # Variables robot
 AMPLITUDE_BACKLEG   = pi/4
