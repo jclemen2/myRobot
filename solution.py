@@ -18,6 +18,10 @@ class SOLUTION: # name of the class
 
         os.system("python3 simulate.py")
 
+        # Read the fitness value from fitness.txt
+        with open("fitness.txt", "r") as fitnessFile:
+            self.fitness = float(fitnessFile.read().strip())  # Convert string to float
+
     def Create_World(self):
         # Start generating the SDF file
         pyrosim.Start_SDF("world.sdf")
