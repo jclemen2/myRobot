@@ -8,8 +8,14 @@ import time
 
 class SIMULATION: # name of the class
     # Constructor
-    def __init__(self):
-        self.physicsClient = p.connect(p.DIRECT)
+    def __init__(self, directOrGUI):
+        # Choose the appropriate simulation mode
+        if directOrGUI == "DIRECT":
+            self.physicsClient = p.connect(p.DIRECT)  # Run in non-visual mode (faster)
+        else:
+            self.physicsClient = p.connect(p.GUI)  # Run with GUI (visual mode)
+
+        # Set up simulation environment
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
         p.setGravity(c.GRAV_X, c.GRAV_Y, c.GRAV_Z)
 
