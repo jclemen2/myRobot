@@ -2,6 +2,7 @@ from hillclimber import HILL_CLIMBER
 import os
 
 hc = HILL_CLIMBER()
+hc.Evolve()
 
 # def main():
 #     # Loop to generate and simulate robots twice
