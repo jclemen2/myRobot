@@ -9,11 +9,8 @@ import time
 class SIMULATION: # name of the class
     # Constructor
     def __init__(self, directOrGUI):
-        # Store mode as an instance variable
-        self.directOrGUI = directOrGUI
-
         # Choose the appropriate simulation mode
-        if self.directOrGUI == "DIRECT":
+        if directOrGUI == "DIRECT":
             self.physicsClient = p.connect(p.DIRECT)  # Run in non-visual mode (faster)
         else:
             self.physicsClient = p.connect(p.GUI)  # Run with GUI (visual mode)
@@ -40,9 +37,8 @@ class SIMULATION: # name of the class
             self.robot.Act(t) # Robot acts on environment
             time.sleep(time_step)  # Slow down to visualize steps
 
-            # Only sleep if running in GUI mode
-            if self.directOrGUI == "GUI":
-                time.sleep(time_step)  # Slow down to visualize steps
+            # Slow the simulation
+            #time.sleep(c.SLEEP)
 
         # # Save sensor and motor values after simulation
         # for sensor in self.robot.sensors.values():
