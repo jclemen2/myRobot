@@ -29,7 +29,7 @@ class SIMULATION: # name of the class
             self.robot.Sense(t)  # Robot senses environment
             self.robot.Think()
             self.robot.Act(t) # Robot acts on environment
-            time.sleep(time_step)  # Slow down to visualize steps
+            #time.sleep(time_step)  # Slow down to visualize steps
 
             # Slow the simulation
             time.sleep(c.SLEEP)
