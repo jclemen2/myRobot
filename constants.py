@@ -31,4 +31,4 @@ FORCE_MOTOR = 50
 # Variables sleeping time of simulation
 SLEEP = 1/100
 
-numberOfGenerations = 2
+numberOfGenerations = 10
