@@ -1,8 +1,14 @@
 from hillclimber import HILL_CLIMBER
 import os
 
+# Create an instance of HILL_CLIMBER
 hc = HILL_CLIMBER()
+
+# Run the evolutionary process
 hc.Evolve()
+
+# Show the best solution in GUI mode
+hc.Show_Best()
 
 # def main():
 #     # Loop to generate and simulate robots twice
