@@ -1,56 +1,78 @@
-from sensor import SENSOR
-from motor import MOTOR
+from generate import Generate_Body as GB
 from pyrosim.neuralNetwork import NEURAL_NETWORK
-
 import pybullet as p
 import pyrosim.pyrosim as pyrosim
+from motor import MOTOR
+from sensor import SENSOR
+import os
+import time
 
-class ROBOT: # name of the class
-    def __init__(self):  # Constructor
+class ROBOT:
+    def __init__(self, solutionID):
+        #import robot
+        GB()
+        # Add robot
         self.robotId = p.loadURDF("body.urdf")
-        self.nn = NEURAL_NETWORK("brain.nndf")
+        #prepare simulation
         pyrosim.Prepare_To_Simulate(self.robotId)
 
-        # Prepare sensors and motors
+        #call function/method
         self.Prepare_To_Sense()
-        self.Prepare_To_Act()
+        self.Prepare_to_Act()
+
+        brainFileName = f"brain{solutionID}.nndf"
+        self.nn = NEURAL_NETWORK(f"brain{solutionID}.nndf") #use specific ID
+        #if os.path.exists(brainFileName):
+            #os.system(f"del {brainFileName}")
+        os.system(f"rm brain{solutionID}.nndf")
+
+        self.solutionID = solutionID
 
     def Prepare_To_Sense(self):
-        # Creates a sensor for each link in the robot
-        self.sensors = {}  # Initialize sensors dictionary
+        #create a dictionary to store sensor instances
+        self.sensors = {}
 
-        # Loop through all link names in the robot
+        #iterate over the link names
         for linkName in pyrosim.linkNamesToIndices:
-            self.sensors[linkName] = SENSOR(linkName)  # Create sensor instance
+            self.sensors[linkName] = SENSOR(linkName)
 
-    def Prepare_To_Act(self):
-        # Creates a motor for each joint in the robot
-        self.motors = {}  # Initialize sensors dictionary
-
-        # Loop through all joint names in the robot
-        for jointName in pyrosim.jointNamesToIndices:
-            self.motors[jointName] = MOTOR(jointName)  # Create motor instance
-
-    def Sense(self, t):
-        # Reads sensor values for each link at time step t.
+    def Sense (self, t):
+        #update each sensor value by calling get_value
         for sensor in self.sensors.values():
-            sensor.Get_Value(t)  # Pass t to the sensor's Get_Value()
+            sensor.Get_value(t)
 
-    def Act(self, t):
-        for neuronName in self.nn.Get_Neuron_Names():
-            if self.nn.Is_Motor_Neuron(neuronName): # Only prints the motor neurons
+    def Prepare_to_Act(self):
+        # create a dictionary to store sensor instances
+        self.motors = {}
+
+        # iterate over the link names
+        for jointName in pyrosim.jointNamesToIndices:
+            self.motors[jointName] = MOTOR(jointName)
+
+    def Act (self, t):
+        for neuronName in self.nn.Get_Neuron_Names(): #iterates over all the neurons in the neural network
+            if self.nn.Is_Motor_Neuron(neuronName):
                 jointName = self.nn.Get_Motor_Neurons_Joint(neuronName)
                 desiredAngle = self.nn.Get_Value_Of(neuronName)
                 self.motors[jointName].Set_Value(self, desiredAngle)
 
-    def Think(self):
+    def Save_Values (self):
+        #Save the motor command vectors for analysis
+        pass
+
+    def Think (self):
         self.nn.Update()
-        #self.nn.Print()
+        #self.nn.Print() #prints all of the neural network values
 
-    def Get_Fitness(self):
-        stateOfLinkZero = p.getLinkState(self.robotId,0)
-        positionOfLinkZero = stateOfLinkZero[0]
-        xCoordinateOfLinkZero = positionOfLinkZero[0]
+    def Get_Fitness (self, fitnessFileName):
+        stateOfLinkZero = p.getLinkState(self.robotId, 0)
+        positionOfLinkZero = stateOfLinkZero[0] #the first x,y,z of the state of link zero
+        xCoordinateOfLinkZero = positionOfLinkZero[0] #only the x coordinate
 
-        with open("fitness.txt", "w") as f:
+        tmpFileName = f"tmp{self.solutionID}.txt"
+
+        with open(tmpFileName, "w") as f:  # "w" mode overwrites the file, we want to write the fitness to a txt file
             f.write(str(xCoordinateOfLinkZero))  # Write as string
+        time.sleep(0.1)
+
+        os.system(f"mv {tmpFileName} {fitnessFileName}")
