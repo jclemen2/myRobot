@@ -17,6 +17,15 @@ class SOLUTION:
 
         os.system("python3 simulate.py")
 
+        # with open("fitness.txt", "r") as fitnessFile:  # open file
+        #     fitnessValue = fitnessFile.read()  # read the fitness value as a string
+        #
+        # self.fitness = float(fitnessValue)  # convert to float
+
+        fitnessFile = open("fitness.txt", "r")
+        self.fitness = float(fitnessFile.read())
+
+
     def Create_World(self):
         # Start generating the SDF file
         pyrosim.Start_SDF("world.sdf")
