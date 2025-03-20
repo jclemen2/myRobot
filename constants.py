@@ -32,3 +32,5 @@ FORCE_MOTOR = 50
 SLEEP = 1/100
 
 numberOfGenerations = 10
+
+populationSize = 2
