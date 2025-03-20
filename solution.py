@@ -10,21 +10,23 @@ class SOLUTION:
         # Scale to [-1, 1]
         self.weights = self.weights * 2 - 1
 
-    def Evaluate(self):
+    def Evaluate(self, directOrGUI):
         self.Create_World()
         self.Generate_Body()
         self.Generate_Brain()
 
-        os.system("python3 simulate.py")
-
-        # with open("fitness.txt", "r") as fitnessFile:  # open file
-        #     fitnessValue = fitnessFile.read()  # read the fitness value as a string
-        #
-        # self.fitness = float(fitnessValue)  # convert to float
+        os.system(f"python3 simulate.py {directOrGUI}")
 
         fitnessFile = open("fitness.txt", "r")
         self.fitness = float(fitnessFile.read())
+        fitnessFile.close()
 
+    def Mutate(self):
+        randomRow = random.randint(0, 2)
+        randomColumn = random.randint(0,1)
+
+        old_value = self.weights[randomRow, randomColumn]  # store the old weight
+        self.weights[randomRow, randomColumn] = random.random() * 2 - 1  # assign new random value
 
     def Create_World(self):
         # Start generating the SDF file
