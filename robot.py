@@ -53,10 +53,12 @@ class ROBOT: # name of the class
         positionOfLinkZero = stateOfLinkZero[0]
         xCoordinateOfLinkZero = positionOfLinkZero[0]
 
-        with open("fitness.txt", "w") as f:  # "w" mode overwrites the file, we want to write the fitness to a txt file
-            f.write(str(xCoordinateOfLinkZero))  # Write as string
+        # with open("fitness.txt", "w") as f:  # "w" mode overwrites the file, we want to write the fitness to a txt file
+        #     f.write(str(xCoordinateOfLinkZero))  # Write as string
 
-
+        f = open("fitness.txt", "w")
+        f.write(str(xCoordinateOfLinkZero))
+        f.close()
 
 
 
