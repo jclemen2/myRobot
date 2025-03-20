@@ -1,34 +1,24 @@
-from math import pi
+import numpy
+#import all constants from other files
 
-# Variables Time of Simulation
-SIMULATION_TIME = 200
+#simulation parameters
+num_iterations = 1000
+max_force = 500
+sleep = 1/100000
+slowsleep = 1/240 #to slow down for GUI
 
-# Variables robot
-AMPLITUDE_BACKLEG   = pi/4
-FREQUENCY_BACKLEG = 20
-PHASEOFFSET_BACKLEG = 0
+#gravity constants
+xGrav = 0
+yGrav = 0
+zGrav = -9.8
 
-AMPLITUDE_FRONTLEG = 0
-FREQUENCY_FRONTLEG = 0
-PHASEOFFSET_FRONTLEG = 0
+#motor parameters
+amplitude = numpy.pi / 4
+frequency = (2* numpy.pi)/num_iterations
+offset = numpy.pi
 
-AMPLITUDE = pi/4
-FREQUENCY = 20
-PHASEOFFSET = 0
-
-# Variables gravity
-GRAV_X = 0
-GRAV_Y = 0
-GRAV_Z = -9.8
-
-# Variables Array
-START = 0
-STEP = 2 * pi
-
-# Variables Motor force
-FORCE_MOTOR = 50
-
-# Variables sleeping time of simulation
-SLEEP = 1/100
-
+#hill climber variables
 numberOfGenerations = 10
+
+#parallel hill climber variables
+populationSize = 2
