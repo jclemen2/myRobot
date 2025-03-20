@@ -4,16 +4,23 @@ from pyrosim.neuralNetwork import NEURAL_NETWORK
 
 import pybullet as p
 import pyrosim.pyrosim as pyrosim
+import os
 
 class ROBOT: # name of the class
-    def __init__(self):  # Constructor
+    def __init__(self, solutionID):  # Constructor
         self.robotId = p.loadURDF("body.urdf")
-        self.nn = NEURAL_NETWORK("brain.nndf")
+
+        brainFileName = f"brain{solutionID}.nndf"
+        self.nn = NEURAL_NETWORK(brainFileName)
+
         pyrosim.Prepare_To_Simulate(self.robotId)
 
         # Prepare sensors and motors
         self.Prepare_To_Sense()
         self.Prepare_To_Act()
+
+        # Delete the brain file after reading it
+        os.system(f"rm {brainFileName}")
 
     def Prepare_To_Sense(self):
         # Creates a sensor for each link in the robot
