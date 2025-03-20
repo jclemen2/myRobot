@@ -4,7 +4,9 @@ import os
 import pyrosim.pyrosim as pyrosim
 
 class SOLUTION:
-    def __init__(self):
+    def __init__(self, nextAvailableID):
+        self.myID = nextAvailableID
+
         # Generate a 3-row x 2-column matrix with random values in [0,1]
         self.weights = numpy.random.rand(3, 2)
         # Scale to [-1, 1]
@@ -15,7 +17,8 @@ class SOLUTION:
         self.Generate_Body()
         self.Generate_Brain()
 
-        os.system("python3 simulate.py " + directOrGUI + " &")
+        command = f"python3 simulate.py {directOrGUI} {self.myID} &"
+        os.system(command)
 
         fitnessFile = open("fitness.txt", "r")
         self.fitness = float(fitnessFile.read())
@@ -27,6 +30,9 @@ class SOLUTION:
 
         old_value = self.weights[randomRow, randomColumn]  # store the old weight
         self.weights[randomRow, randomColumn] = random.random() * 2 - 1  # assign new random value
+
+    def Set_ID(self, nextAvailableID):
+        self.myID = nextAvailableID
 
     def Create_World(self):
         # Start generating the SDF file
@@ -62,8 +68,9 @@ class SOLUTION:
         pyrosim.End()
 
     def Generate_Brain(self):
+        brainFileName = f"brain{self.myID}.nndf"  # Unique filename for each solution
         # Start generating the URDF file
-        pyrosim.Start_NeuralNetwork("brain.nndf")
+        pyrosim.Start_NeuralNetwork(brainFileName)
 
         # Name neurons with numbers
         # Create sensor neurons
