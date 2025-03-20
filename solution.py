@@ -1,105 +1,78 @@
-import numpy
-import pyrosim.pyrosim as pyrosim
 import random
+import numpy as np
+import pyrosim.pyrosim as pyrosim
 import os
+import time
 
-class SOLUTION: # name of the class
-    def __init__(self):
-        # Generate a 3-row x 2-column matrix with random values in [0,1]
-        self.weights = numpy.random.rand(3, 2)
+class SOLUTION:
+    def __init__(self, nextAvailableID):
+        self.weights = 2 * np.random.rand(3, 2) - 1 #this generates 3x2 matrix with random values between -1 and 1
+        self.fitness = None #initialize the fitness attribute
+        self.myID = nextAvailableID #assigns each ID to a new variable called my ID
 
-        # Scale to [-1,1]
-        self.weights = self.weights * 2 - 1
+    def Create_World(self):
+        pyrosim.Start_SDF("world.sdf")  # stores info about the world
+        pyrosim.Send_Cube(name=f"Box_1", pos=[1, 1, 1], size=[1, 1, 1])  # sends cube for the world
 
-    def Evaluate(self, directOrGUI):
+    # create generate body function
+    def Generate_Body (self):
+        pyrosim.Start_URDF("body.urdf")  # generate urdf file of the robot body
+        pyrosim.Send_Cube(name="torso", pos=[1.5, 0, 1.5], size=[1, 1, 1])  # create torso
+        pyrosim.Send_Joint(name="torso_back", parent="torso", child="back", type="revolute",
+                           position=[1, 0, 1])  # create joint
+        pyrosim.Send_Cube(name="back", pos=[-0.5, 0, -0.5], size=[1, 1, 1])  # back leg
+        pyrosim.Send_Joint(name="torso_front", parent="torso", child="front", type="revolute",
+                           position=[2, 0, 1])  # create join
+        pyrosim.Send_Cube(name="front", pos=[0.5, 0, -0.5], size=[1, 1, 1])  # front leg
+        pyrosim.End()  # ends simulation
+
+    # create generate brain function using a neural network
+    def Generate_Brain (self):
+        brainFileName = f"brain{self.myID}.nndf"
+        pyrosim.Start_URDF(brainFileName)  # generate nndf (neural network) file of the robot brain
+        pyrosim.Send_Sensor_Neuron(name=0,linkName="torso")  # this line assigns a numeric value with each neuron - this one is for torso
+        pyrosim.Send_Sensor_Neuron(name=1, linkName="back")
+        pyrosim.Send_Sensor_Neuron(name=2, linkName="front")
+        pyrosim.Send_Motor_Neuron(name=3, jointName="torso_back")
+        pyrosim.Send_Motor_Neuron(name=4, jointName="torso_front")
+
+        # assign variables
+        sensor_neurons = [0, 1, 2]  # IDs of sensor neurons
+        motor_neurons = [0, 1]  # IDs of motor neurons
+
+        # Generate synapses using nested loops
+        for currentRow in sensor_neurons:
+            for currentColumn in motor_neurons:
+                weight = self.weights[currentRow][currentColumn]
+                pyrosim.Send_Synapse(sourceNeuronName=currentRow, targetNeuronName=currentColumn+3, weight=weight)
+
+    def Start_Simulation(self, directOrGUI):
+        # this method is going to generate the robots world, body, neural network, and send the six random weights
         self.Create_World()
         self.Generate_Body()
         self.Generate_Brain()
+        os.system(f"nohup python3 simulate.py {directOrGUI} {self.myID} &")
 
-        # Run the simulation in the specified mode (DIRECT or GUI)
-        os.system(f"python3 simulate.py {directOrGUI}")
+    def Wait_For_Simulation_To_End (self):
 
-        # Read the fitness value from fitness.txt
-        with open("fitness.txt", "r") as fitnessFile:
-            self.fitness = float(fitnessFile.read().strip())  # Convert string to float
+        fitnessFileName = f"fitness{self.myID}.txt"  # gives the name of file a variable
+        while not os.path.exists(fitnessFileName):
+            time.sleep(0.01)  # if the file can't be found it sleeps for a very short period of time
 
-        # Print fitness for debugging
-        print(f"Fitness of current solution ({directOrGUI} mode): {self.fitness}")
+        with open(fitnessFileName, "r") as fitnessFile:  # open file
+            fitnessValue = fitnessFile.read()  # read the fitness value as a string
 
-    def Create_World(self):
-        # Start generating the SDF file
-        pyrosim.Start_SDF("world.sdf")
+        self.fitness = float(fitnessValue)  # convert to float
+        print(self.fitness)
 
-        # set variables size and position
-        length = 1
-        width = 1
-        height = 1
-        x = 4
-        y = 2
-        z = 0.5
-
-        # Create Object
-        pyrosim.Send_Cube(name="Box", pos=[x, y, z], size=[length, width, height])
-
-        # Finalize the SDF file
-        pyrosim.End()
-
-    def Generate_Body(self):
-        # Start generating the URDF file
-        pyrosim.Start_URDF("body.urdf")
-
-        pyrosim.Send_Cube(name="Torso", pos=[1.5, 0, 1.5], size=[1, 1, 1])
-        pyrosim.Send_Joint(name="Torso_BackLeg", parent="Torso", child="BackLeg", type="revolute", position=[1, 0, 1])
-        pyrosim.Send_Cube(name="BackLeg", pos=[-0.5, 0, -0.5],
-                          size=[1, 1, 1])
-        pyrosim.Send_Joint(name="Torso_FrontLeg", parent="Torso", child="FrontLeg", type="revolute", position=[2, 0, 1])
-        pyrosim.Send_Cube(name="FrontLeg", pos=[0.5, 0, -0.5],
-                          size=[1, 1, 1])
-
-        # Finalize the URDF file
-        pyrosim.End()
-
-    def Generate_Brain(self):
-        # Start generating the URDF file
-        pyrosim.Start_NeuralNetwork("brain.nndf")
-
-        # Name neurons with numbers
-        # Create sensor neurons
-        pyrosim.Send_Sensor_Neuron(name=0, linkName="Torso")
-        pyrosim.Send_Sensor_Neuron(name=1, linkName="BackLeg")
-        pyrosim.Send_Sensor_Neuron(name=2, linkName="FrontLeg")
-
-        # Create motor neurons
-        pyrosim.Send_Motor_Neuron(name=3, jointName="Torso_BackLeg")
-        pyrosim.Send_Motor_Neuron(name=4, jointName="Torso_FrontLeg")
-
-        # # Create synapses
-        # pyrosim.Send_Synapse(sourceNeuronName=1, targetNeuronName=3,
-        #                      weight=1.0) # this connects neuron 1 to neuron 3 with a synaptic with weight 1.0.
-        # pyrosim.Send_Synapse(sourceNeuronName=2, targetNeuronName=3,
-        #                      weight=1.0)  # this connects neuron 2 to neuron 3 with a synaptic with weight 1.0.
-        # pyrosim.Send_Synapse(sourceNeuronName=1, targetNeuronName=4,
-        #                      weight=0.5)  # this connects neuron 1 to neuron 4 with a synaptic with weight 1.0.
-        # pyrosim.Send_Synapse(sourceNeuronName=2, targetNeuronName=4,
-        #                      weight=0.0)  # this connects neuron 2 to neuron 4 with a synaptic with weight 1.0.
-
-        # Create synapses using nested loops
-        for currentRow in range(3):  # Iterate over sensor neurons 0, 1, 2
-            for currentColumn in range(2):  # Iterate over motor neurons 3, 4
-                random_weight = random.uniform(-1, 1)  # Generate a random weight between -1 and 1
-                pyrosim.Send_Synapse(sourceNeuronName=currentRow, targetNeuronName=currentColumn + 3,
-                                     weight=self.weights[currentRow][currentColumn])
-
-        # Finalize the URDF file
-        pyrosim.End()
+        os.system(f"rm fitness{self.myID}.txt")  #delete in cmd
 
     def Mutate(self):
-        # Choose a random row (sensor neuron) and column (motor neuron)
-        randomRow = random.randint(0, 2)  # Randomly pick a sensor neuron
-        randomColumn = random.randint(0, 1)  # Randomly pick a motor neuron
+        randomRow = random.randint(0,2) #random row index (0,1, or 2)
+        randomColumn = random.randint(0,1) #random column index (0 or 1)
 
-        # Mutate the selected weight to a new random value in [-1,1]
-        self.weights[randomRow, randomColumn] = random.random() * 2 - 1
+        old_value = self.weights[randomRow, randomColumn]  #store the old weight
+        self.weights[randomRow, randomColumn] = random.random() * 2 - 1  #assign new random value
 
-        # Print mutation details for debugging
-        print(f"Mutated weight at [{randomRow}, {randomColumn}] to {self.weights[randomRow, randomColumn]}")
+    def Set_ID(self, nextAvailableID):
+        self.myID = nextAvailableID  # assigns a new unique ID to the solution
