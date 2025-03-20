@@ -1,61 +1,49 @@
 from solution import SOLUTION
+
 import constants as c
 import copy
-import os
-import time
 
 class PARALLEL_HILL_CLIMBER:
     def __init__(self):
-        #time.sleep(0.5)
-        os.system(f"rm brain*.nndf")
-        os.system(f"rm fitness*.txt")
-
-        self.parents = {} #generates an empty dictionary
-        self.nextAvailableID = 0 #assigns a unique ID to each fitness level
-
+        pass
+        self.parents = {} # generates an empty dictionary
         for i in range(c.populationSize):
-            self.parents[i] = SOLUTION(self.nextAvailableID)  # store solution object in dictionary
-            self.nextAvailableID += 1  # increment the ID for the next solution
+            self.parents[i] = SOLUTION()
 
     def Evolve(self):
-        self.Evaluate(self.parents)
+        for key in self.parents:
+            self.parents[key].Evaluate("GUI")
+
+        # print("Evaluating initial random solution...")
+        # self.parent.Evaluate("GUI")  # Show the first solution visually
+        #
+        # print("\nStarting evolution process...\n")
+        # self.parent.Evaluate("DIRECT")  # Evaluate initial solution in DIRECT mode
+        #
+        # for currentGeneration in range(c.numberOfGenerations):
+        #     self.Evolve_For_One_Generation()
 
     def Evolve_For_One_Generation(self):
         self.Spawn()
         self.Mutate()
-        self.Evaluate(self.children)
-        self.Select()
+        self.child.Evaluate("DIRECT")
         self.Print()
-
+        self.Select()
 
     def Spawn(self):
-        self.children = {}  # Dictionary to store child solutions
-        for key in self.parents:
-            self.children[key] = copy.deepcopy(self.parents[key])  # Clone parent
-            self.children[key].Set_ID(self.nextAvailableID)  # Assign new unique ID
-            self.nextAvailableID += 1  # Increment ID for the next child
+        self.child = copy.deepcopy(self.parent)
 
     def Mutate(self):
-        for child in self.children.keys():
-            self.children[child].Mutate()
+        self.child.Mutate()
 
     def Select(self):
         if self.child.fitness < self.parent.fitness:
-            self.parent = self.child #if the child is better replace the parent value with the child value
+            self.parent = self.child  # if the child is better replace the parent value with the child value
 
-    def Print (self):
-        print ()
-        for parent in self.parents.keys():
-            print(f"Parent Fitness: {self.parents[parent].fitness}, Child Fitness: {self.children[parent].fitness}")
-        print ()
+    def Print(self):
+        print(f"Parent Fitness: {self.parent.fitness}, Child Fitness: {self.child.fitness}")
 
     def Show_Best(self):
-        best_key = min(self.parents, key=lambda k: self.parents[k].fitness) #find parent with lowest fitness
-        self.parents[best_key].Start_Simulation("GUI") #print simulation in GUI for the best
-
-    def Evaluate (self, solutions):
-        for key in solutions.keys():
-            solutions[key].Start_Simulation("DIRECT")  # run evaluation in direct mode
-
-        for key in solutions.keys():
-            solutions[key].Wait_For_Simulation_To_End()
+        pass
+        # print("\nRe-evaluating the best solution with GUI...")
+        # self.parent.Evaluate("GUI")  # show the best evolved solution
