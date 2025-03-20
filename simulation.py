@@ -41,3 +41,5 @@ class SIMULATION: # name of the class
         # for motor in self.robot.motors.values():
         #     motor.Save_Values()
 
+    def Get_Fitness(self):
+        self.robot.Get_Fitness()
