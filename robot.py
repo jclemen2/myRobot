@@ -1,78 +1,63 @@
-from generate import Generate_Body as GB
+from sensor import SENSOR
+from motor import MOTOR
 from pyrosim.neuralNetwork import NEURAL_NETWORK
+
 import pybullet as p
 import pyrosim.pyrosim as pyrosim
-from motor import MOTOR
-from sensor import SENSOR
-import os
-import time
 
-class ROBOT:
-    def __init__(self, solutionID):
-        #import robot
-        GB()
-        # Add robot
+class ROBOT: # name of the class
+    def __init__(self):  # Constructor
         self.robotId = p.loadURDF("body.urdf")
-        #prepare simulation
+        self.nn = NEURAL_NETWORK("brain.nndf")
         pyrosim.Prepare_To_Simulate(self.robotId)
 
-        #call function/method
+        # Prepare sensors and motors
         self.Prepare_To_Sense()
-        self.Prepare_to_Act()
-
-        brainFileName = f"brain{solutionID}.nndf"
-        self.nn = NEURAL_NETWORK(f"brain{solutionID}.nndf") #use specific ID
-        #if os.path.exists(brainFileName):
-            #os.system(f"del {brainFileName}")
-        os.system(f"rm brain{solutionID}.nndf")
-
-        self.solutionID = solutionID
+        self.Prepare_To_Act()
 
     def Prepare_To_Sense(self):
-        #create a dictionary to store sensor instances
-        self.sensors = {}
+        # Creates a sensor for each link in the robot
+        self.sensors = {}  # Initialize sensors dictionary
 
-        #iterate over the link names
+        # Loop through all link names in the robot
         for linkName in pyrosim.linkNamesToIndices:
-            self.sensors[linkName] = SENSOR(linkName)
+            self.sensors[linkName] = SENSOR(linkName)  # Create sensor instance
 
-    def Sense (self, t):
-        #update each sensor value by calling get_value
-        for sensor in self.sensors.values():
-            sensor.Get_value(t)
+    def Prepare_To_Act(self):
+        # Creates a motor for each joint in the robot
+        self.motors = {}  # Initialize sensors dictionary
 
-    def Prepare_to_Act(self):
-        # create a dictionary to store sensor instances
-        self.motors = {}
-
-        # iterate over the link names
+        # Loop through all joint names in the robot
         for jointName in pyrosim.jointNamesToIndices:
-            self.motors[jointName] = MOTOR(jointName)
+            self.motors[jointName] = MOTOR(jointName)  # Create motor instance
 
-    def Act (self, t):
-        for neuronName in self.nn.Get_Neuron_Names(): #iterates over all the neurons in the neural network
-            if self.nn.Is_Motor_Neuron(neuronName):
+    def Sense(self, t):
+        # Reads sensor values for each link at time step t.
+        for sensor in self.sensors.values():
+            sensor.Get_Value(t)  # Pass t to the sensor's Get_Value()
+
+    def Act(self, t):
+        for neuronName in self.nn.Get_Neuron_Names():
+            if self.nn.Is_Motor_Neuron(neuronName): # Only prints the motor neurons
                 jointName = self.nn.Get_Motor_Neurons_Joint(neuronName)
                 desiredAngle = self.nn.Get_Value_Of(neuronName)
                 self.motors[jointName].Set_Value(self, desiredAngle)
 
-    def Save_Values (self):
-        #Save the motor command vectors for analysis
-        pass
-
-    def Think (self):
+    def Think(self):
         self.nn.Update()
-        #self.nn.Print() #prints all of the neural network values
+        #self.nn.Print()
 
-    def Get_Fitness (self, fitnessFileName):
+
+    def Get_Fitness(self):
         stateOfLinkZero = p.getLinkState(self.robotId, 0)
-        positionOfLinkZero = stateOfLinkZero[0] #the first x,y,z of the state of link zero
-        xCoordinateOfLinkZero = positionOfLinkZero[0] #only the x coordinate
+        positionOfLinkZero = stateOfLinkZero[0]
+        xCoordinateOfLinkZero = positionOfLinkZero[0]
 
-        tmpFileName = f"tmp{self.solutionID}.txt"
+        # with open("fitness.txt", "w") as f:  # "w" mode overwrites the file, we want to write the fitness to a txt file
+        #     f.write(str(xCoordinateOfLinkZero))  # Write as string
 
-        with open(tmpFileName, "w") as f:  # "w" mode overwrites the file, we want to write the fitness to a txt file
-            f.write(str(xCoordinateOfLinkZero))  # Write as string
-        time.sleep(0.1)
+        f = open("fitness.txt", "w")
+        f.write(str(xCoordinateOfLinkZero))
+        f.close()
 
-        os.system(f"mv {tmpFileName} {fitnessFileName}")
+
