@@ -47,10 +47,16 @@ class ROBOT: # name of the class
         self.nn.Update()
         #self.nn.Print()
 
+
     def Get_Fitness(self):
-        stateOfLinkZero = p.getLinkState(self.robotId,0)
+        stateOfLinkZero = p.getLinkState(self.robotId, 0)
         positionOfLinkZero = stateOfLinkZero[0]
         xCoordinateOfLinkZero = positionOfLinkZero[0]
 
-        with open("fitness.txt", "w") as f:
+        with open("fitness.txt", "w") as f:  # "w" mode overwrites the file, we want to write the fitness to a txt file
             f.write(str(xCoordinateOfLinkZero))  # Write as string
+
+
+
+
+
