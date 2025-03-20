@@ -19,7 +19,6 @@ class NEURAL_NETWORK:
         f.close()
 
     def Print(self):
-
         self.Print_Sensor_Neuron_Values()
 
         self.Print_Hidden_Neuron_Values()
