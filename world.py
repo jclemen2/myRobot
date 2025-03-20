@@ -1,7 +1,11 @@
+from generate import Create_World as CW
 import pybullet as p
 
-class WORLD: # name of the class
+class WORLD:
     def __init__(self):
-        self.planeId = p.loadURDF("plane.urdf")# Constructor
-        p.loadSDF("world.sdf")
+        #create the world
+        CW()
+
+        #add a floor
+        self.planeId = p.loadURDF("plane.urdf")
 
