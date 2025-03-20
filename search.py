@@ -1,10 +1,10 @@
-from hillclimber import HILL_CLIMBER
+from parallelHillClimber import PARALLEL_HILL_CLIMBER
 import os
 
-hc = HILL_CLIMBER()
+phc = PARALLEL_HILL_CLIMBER()
 
-hc.Evolve()
-hc.Show_Best()
+phc.Evolve()
+phc.Show_Best()
 
 # robot = 5
 # for i in range(robot):
