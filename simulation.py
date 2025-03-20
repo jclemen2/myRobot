@@ -1,51 +1,50 @@
+#import packages
+import pybullet as p
+import pybullet_data
+import time
+import constants as c
+from constants import slowsleep
 from world import WORLD
 from robot import ROBOT
 
-import pybullet as p
-import pybullet_data
-import constants as c
-import time
+class SIMULATION:
+    def __init__(self, directOrGUI, solutionID):
+        self.directOrGUI = directOrGUI
+        self.solutionID = solutionID
 
-class SIMULATION: # name of the class
-    # Constructor
-    def __init__(self, directOrGUI):
-        # Choose the appropriate simulation mode
-        if directOrGUI == "DIRECT":
-            self.physicsClient = p.connect(p.DIRECT)  # Run in non-visual mode (faster)
+        #connect to the physics engine and set up the simulation environment
+        if directOrGUI == "GUI":
+            self.physicsClient = p.connect(p.GUI) #heads up mode
         else:
-            self.physicsClient = p.connect(p.GUI)  # Run with GUI (visual mode)
+            self.physicsClient = p.connect(p.DIRECT) #blind mode
 
-        # Set up simulation environment
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
-        p.setGravity(c.GRAV_X, c.GRAV_Y, c.GRAV_Z)
+        p.setGravity(c.xGrav, c.yGrav, c.zGrav)
 
-        # Create a world instance
+        #create instances
         self.world = WORLD()
+        self.robot = ROBOT(solutionID)
 
-        # Create a robot instance
-        self.robot = ROBOT()
-
-    # Destructor
-    def __del__(self):
-        p.disconnect()
-
-    def Run(self, steps=c.SIMULATION_TIME, time_step=c.SLEEP):
-        for t in range (steps):
+    def Run(self, directOrGUI):
+        for t in range(c.num_iterations):
             p.stepSimulation()
-            self.robot.Sense(t)  # Robot senses environment
+            #call robot method sense
+            self.robot.Sense(t)
+            # allow the robot to think
             self.robot.Think()
-            self.robot.Act(t) # Robot acts on environment
-            time.sleep(time_step)  # Slow down to visualize steps
+            #call the motors
+            self.robot.Act(t)
+            #slow down the simulation
+            #time.sleep(c.sleep)
 
-            # Slow the simulation
-            #time.sleep(c.SLEEP)
+            if directOrGUI == "GUI":
+                time.sleep(slowsleep)
+            else:
+                time.sleep(c.sleep)
 
-        # # Save sensor and motor values after simulation
-        # for sensor in self.robot.sensors.values():
-        #     sensor.Save_Values()
-        #
-        # for motor in self.robot.motors.values():
-        #     motor.Save_Values()
+    def Get_Fitness (self):
+        self.robot.Get_Fitness(f"fitness{self.solutionID}.txt")
 
-    def Get_Fitness(self):
-        self.robot.Get_Fitness()
+    #def __del__(self):
+        #disconnect from simulation
+        #p.disconnect()
