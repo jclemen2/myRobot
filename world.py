@@ -5,3 +5,4 @@ class WORLD: # name of the class
         self.planeId = p.loadURDF("plane.urdf")# Constructor
         p.loadSDF("world.sdf")
 
+
