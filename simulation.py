@@ -8,7 +8,7 @@ import time
 
 class SIMULATION: # name of the class
     # Constructor
-    def __init__(self, directOrGUI):
+    def __init__(self, directOrGUI, solutionID):
         self.directOrGUI = directOrGUI
 
         # connect to the physics engine and set up the simulation environment
@@ -24,7 +24,7 @@ class SIMULATION: # name of the class
         self.world = WORLD()
 
         # Create a robot instance
-        self.robot = ROBOT()
+        self.robot = ROBOT(solutionID)
 
     # Destructor
     def __del__(self):
