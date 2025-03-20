@@ -9,6 +9,8 @@ import time
 class SIMULATION: # name of the class
     # Constructor
     def __init__(self, directOrGUI):
+        self.directOrGUI = directOrGUI
+
         # connect to the physics engine and set up the simulation environment
         if directOrGUI == "GUI":
             self.physicsClient = p.connect(p.GUI)  # heads up mode
@@ -37,7 +39,8 @@ class SIMULATION: # name of the class
             time.sleep(time_step)  # Slow down to visualize steps
 
             # Slow the simulation
-            time.sleep(c.SLEEP)
+            if self.directOrGUI == "GUI":
+                time.sleep(c.SLEEP)
 
         # # Save sensor and motor values after simulation
         # for sensor in self.robot.sensors.values():
