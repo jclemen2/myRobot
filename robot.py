@@ -8,6 +8,7 @@ import os
 
 class ROBOT: # name of the class
     def __init__(self, solutionID):  # Constructor
+        self.solutionID = solutionID  # Save the ID for later use
         self.robotId = p.loadURDF("body.urdf")
 
         brainFileName = f"brain{solutionID}.nndf"
@@ -63,8 +64,13 @@ class ROBOT: # name of the class
         # with open("fitness.txt", "w") as f:  # "w" mode overwrites the file, we want to write the fitness to a txt file
         #     f.write(str(xCoordinateOfLinkZero))  # Write as string
 
-        f = open("fitness.txt", "w")
-        f.write(str(xCoordinateOfLinkZero))
-        f.close()
+        tmpFileName = f"tmp{self.solutionID}.txt"
+        finalFileName = f"fitness{self.solutionID}.txt"
+
+        with open(tmpFileName, "w") as f:
+            f.write(str(xCoordinateOfLinkZero))
+
+        # Rename tmp file to final fitness file (Mac/Linux)
+        os.system(f"mv {tmpFileName} {finalFileName}")
 
 
