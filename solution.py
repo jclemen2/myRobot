@@ -2,6 +2,7 @@ import numpy
 import random
 import os
 import pyrosim.pyrosim as pyrosim
+import time
 
 class SOLUTION:
     def __init__(self, nextAvailableID):
@@ -20,9 +21,45 @@ class SOLUTION:
         command = f"python3 simulate.py {directOrGUI} {self.myID} &"
         os.system(command)
 
-        fitnessFile = open("fitness.txt", "r")
-        self.fitness = float(fitnessFile.read())
-        fitnessFile.close()
+        # fitnessFile = open("fitness.txt", "r")
+        # self.fitness = float(fitnessFile.read())
+        # fitnessFile.close()
+
+        fitnessFileName = f"fitness{str(self.myID)}.txt"
+
+        # Wait for the simulation to finish and the file to be created
+        while not os.path.exists(fitnessFileName):
+            time.sleep(0.01)  # Wait 10ms before checking again
+
+        # Read fitness once file is available
+        with open(fitnessFileName, "r") as fitnessFile:
+            self.fitness = float(fitnessFile.read())
+
+        print(f"Solution {self.myID} fitness: {self.fitness}")
+
+    def Start_Simulation(self, directOrGUI):
+        self.Create_World()
+        self.Generate_Body()
+        self.Generate_Brain()
+
+        command = f"python3 simulate.py {directOrGUI} {self.myID} &"
+        os.system(command)
+
+    def Wait_For_Simulation_To_End(self):
+        fitnessFileName = f"fitness{str(self.myID)}.txt"
+
+        # Wait for the simulation to finish and the file to be created
+        while not os.path.exists(fitnessFileName):
+            time.sleep(0.01)  # Wait 10ms before checking again
+
+        # Read fitness once file is available
+        with open(fitnessFileName, "r") as fitnessFile:
+            self.fitness = float(fitnessFile.read())
+
+        #print(f"Solution {self.myID} fitness: {self.fitness}")
+
+        # Delete fitness file to keep directory clean
+        os.system(f"rm {fitnessFileName}")
 
     def Mutate(self):
         randomRow = random.randint(0, 2)
@@ -96,7 +133,9 @@ class SOLUTION:
         for currentRow in range(3):  # Iterate over sensor neurons 0, 1, 2
             for currentColumn in range(2):  # Iterate over motor neurons 3, 4
                 random_weight = random.uniform(-1, 1)  # Generate a random weight between -1 and 1
-                pyrosim.Send_Synapse(sourceNeuronName=currentRow, targetNeuronName=currentColumn+3., weight=self.weights[currentRow][currentColumn])
+                pyrosim.Send_Synapse(sourceNeuronName=currentRow, targetNeuronName=currentColumn+3, weight=self.weights[currentRow][currentColumn])
+
+                print(f"ID {self.myID} weights:\n{self.weights}")
 
         # Finalize the URDF file
         pyrosim.End()
