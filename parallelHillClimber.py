@@ -57,9 +57,19 @@ class PARALLEL_HILL_CLIMBER:
         print()  # Print an empty line at the end
 
     def Show_Best(self):
-        pass
         # print("\nRe-evaluating the best solution with GUI...")
         # self.parent.Evaluate("GUI")  # show the best evolved solution
+
+        bestParent = None
+        bestFitness = float('inf')
+
+        for key in self.parents:
+            if self.parents[key].fitness < bestFitness:
+                bestFitness = self.parents[key].fitness
+                bestParent = self.parents[key]
+
+        print(f"\nBest Fitness: {bestFitness} (Showing best parent in GUI mode...)")
+        bestParent.Start_Simulation("GUI")
 
     def Evaluate(self, solutions):
         for key in solutions:
