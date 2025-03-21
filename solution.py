@@ -3,13 +3,14 @@ import random
 import os
 import pyrosim.pyrosim as pyrosim
 import time
+import constants as c
 
 class SOLUTION:
     def __init__(self, nextAvailableID):
         self.myID = nextAvailableID
 
         # Generate a 3-row x 2-column matrix with random values in [0,1]
-        self.weights = numpy.random.rand(3, 2)
+        self.weights = numpy.random.rand(c.numSensorNeurons, c.numMotorNeurons)
         # Scale to [-1, 1]
         self.weights = self.weights * 2 - 1
 
@@ -62,8 +63,8 @@ class SOLUTION:
         os.system(f"rm {fitnessFileName}")
 
     def Mutate(self):
-        randomRow = random.randint(0, 2)
-        randomColumn = random.randint(0,1)
+        randomRow = random.randint(0, c.numSensorNeurons - 1)
+        randomColumn = random.randint(0, c.numMotorNeurons - 1)
 
         old_value = self.weights[randomRow, randomColumn]  # store the old weight
         self.weights[randomRow, randomColumn] = random.random() * 2 - 1  # assign new random value
@@ -130,10 +131,10 @@ class SOLUTION:
                              weight=0.0)  # this connects neuron 2 to neuron 4 with a synaptic with weight 1.0.
 
         # Create synapses using nested loops
-        for currentRow in range(3):  # Iterate over sensor neurons 0, 1, 2
-            for currentColumn in range(2):  # Iterate over motor neurons 3, 4
+        for currentRow in range(c.numSensorNeurons):  # Iterate over sensor neurons 0, 1, 2
+            for currentColumn in range(c.numMotorNeurons):  # Iterate over motor neurons 3, 4
                 random_weight = random.uniform(-1, 1)  # Generate a random weight between -1 and 1
-                pyrosim.Send_Synapse(sourceNeuronName=currentRow, targetNeuronName=currentColumn+3, weight=self.weights[currentRow][currentColumn])
+                pyrosim.Send_Synapse(sourceNeuronName=currentRow, targetNeuronName=currentColumn+c.numSensorNeurons, weight=self.weights[currentRow][currentColumn])
 
                 #print(f"ID {self.myID} weights:\n{self.weights}")
 
