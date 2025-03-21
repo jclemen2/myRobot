@@ -1,7 +1,7 @@
 from math import pi
 
 # Variables Time of Simulation
-SIMULATION_TIME = 1000
+SIMULATION_TIME = 100
 
 # Variables robot
 AMPLITUDE_BACKLEG   = pi/4
@@ -31,6 +31,8 @@ FORCE_MOTOR = 50
 # Variables sleeping time of simulation
 SLEEP = 1/100
 
-numberOfGenerations = 10
+numberOfGenerations = 1
+populationSize = 1
 
-populationSize = 10
+numSensorNeurons = 3
+numMotorNeurons = 2
