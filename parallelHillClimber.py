@@ -2,9 +2,14 @@ from solution import SOLUTION
 
 import constants as c
 import copy
+import os
 
 class PARALLEL_HILL_CLIMBER:
     def __init__(self):
+        # Clean up leftover brain and fitness files
+        os.system("rm brain*.txt")
+        os.system("rm fitness*.txt")
+
         self.nextAvailableID = 0
         self.parents = {} # generates an empty dictionary
         for i in range(c.populationSize):
@@ -14,7 +19,12 @@ class PARALLEL_HILL_CLIMBER:
 
     def Evolve(self):
         for key in self.parents:
-            self.parents[key].Evaluate("GUI")
+            self.parents[key].Start_Simulation("DIRECT")
+
+        # Wait for all simulations to complete and read fitness
+        for key in self.parents:
+            self.parents[key].Wait_For_Simulation_To_End()
+            print(f"Parent {key} fitness: {self.parents[key].fitness}")
 
         # print("Evaluating initial random solution...")
         # self.parent.Evaluate("GUI")  # Show the first solution visually
@@ -22,15 +32,16 @@ class PARALLEL_HILL_CLIMBER:
         # print("\nStarting evolution process...\n")
         # self.parent.Evaluate("DIRECT")  # Evaluate initial solution in DIRECT mode
         #
-        # for currentGeneration in range(c.numberOfGenerations):
-        #     self.Evolve_For_One_Generation()
+        for currentGeneration in range(c.numberOfGenerations):
+            self.Evolve_For_One_Generation()
 
     def Evolve_For_One_Generation(self):
-        self.Spawn()
-        self.Mutate()
-        self.child.Evaluate("DIRECT")
-        self.Print()
-        self.Select()
+        pass
+        # self.Spawn()
+        # self.Mutate()
+        # self.child.Evaluate("DIRECT")
+        # self.Print()
+        # self.Select()
 
     def Spawn(self):
         self.children = {}  # Dictionary to store child solutions
