@@ -18,7 +18,7 @@ class SOLUTION:
         self.Generate_Body()
         self.Generate_Brain()
 
-        command = f"python3 simulate.py {directOrGUI} {self.myID} &"
+        command = f"python3 simulate.py {directOrGUI} {self.myID} 2>&1 &"
         os.system(command)
 
         # fitnessFile = open("fitness.txt", "r")
