@@ -135,7 +135,7 @@ class SOLUTION:
                 random_weight = random.uniform(-1, 1)  # Generate a random weight between -1 and 1
                 pyrosim.Send_Synapse(sourceNeuronName=currentRow, targetNeuronName=currentColumn+3, weight=self.weights[currentRow][currentColumn])
 
-                print(f"ID {self.myID} weights:\n{self.weights}")
+                #print(f"ID {self.myID} weights:\n{self.weights}")
 
         # Finalize the URDF file
         pyrosim.End()
