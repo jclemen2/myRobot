@@ -34,5 +34,5 @@ SLEEP = 1/100
 numberOfGenerations = 1
 populationSize = 1
 
-numSensorNeurons = 8
-numMotorNeurons = 7
+numSensorNeurons = 6
+numMotorNeurons = 5
