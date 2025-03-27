@@ -4,6 +4,9 @@ class HILL_CLIMBER:
     def __init__(self):
         self.parent = SOLUTION()
 
+    def Evolve(self):
+        self.parent.Evaluate()
+
     # def Evolve(self):
     #     print("Evaluating initial random solution...")
     #     self.parent.Evaluate("GUI")  # Show the first solution visually
