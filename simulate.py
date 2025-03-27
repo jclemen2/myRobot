@@ -1,9 +1,5 @@
 from simulation import SIMULATION
-import sys
-
-directOrGUI = sys.argv[1] #extract command-line argument to determine mode (GUI or direct)
 
 # Create a simulation instance
-simulation = SIMULATION(directOrGUI)
+simulation = SIMULATION()
 simulation.Run()
-simulation.Get_Fitness()
