@@ -28,7 +28,10 @@ class SIMULATION: # name of the class
 
     # Destructor
     def __del__(self):
-        p.disconnect()
+        try:
+            p.disconnect()
+        except Exception as e:
+            pass  # Ignore errors during cleanup
 
     def Run(self, steps=c.SIMULATION_TIME, time_step=c.SLEEP):
         for t in range (steps):
