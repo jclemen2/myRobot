@@ -40,7 +40,3 @@ class HILL_CLIMBER:
     def Show_Best(self):
         print("\nRe-evaluating the best solution with GUI...")
         self.parent.Evaluate("GUI")  # show the best evolved solution
-
-
-
-
