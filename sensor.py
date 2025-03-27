@@ -22,12 +22,3 @@ class SENSOR: # name of the class
         file_path = os.path.join(data_dir, f"{self.linkName}SensorValues.npy")
         numpy.save(file_path, self.values)
         #print(f"Saved sensor data: {file_path}")
-
-
-
-
-
-
-
-
-
