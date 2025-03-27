@@ -32,7 +32,7 @@ class HILL_CLIMBER:
 
     def Select(self):
         if self.child.fitness < self.parent.fitness:
-            self.parent = self.child  # if the child is better replace the parent value with the child value
+                self.parent = self.child
 
     def Print(self):
         print(f"Parent Fitness: {self.parent.fitness}, Child Fitness: {self.child.fitness}")
@@ -40,6 +40,9 @@ class HILL_CLIMBER:
     def Show_Best(self):
         print("\nRe-evaluating the best solution with GUI...")
         self.parent.Evaluate("GUI")  # show the best evolved solution
+
+
+
 
 
 
