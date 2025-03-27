@@ -27,6 +27,7 @@ class HILL_CLIMBER:
         self.Spawn()
         self.Mutate()
         self.child.Evaluate()
+        self.Print()
         self.Select()
 
     # def Evolve_For_One_Generation(self):
@@ -46,9 +47,9 @@ class HILL_CLIMBER:
         if self.child.fitness < self.parent.fitness:
                 self.parent = self.child
 
-    # def Print(self):
-    #     print(f"Parent Fitness: {self.parent.fitness}, Child Fitness: {self.child.fitness}")
-    #
+    def Print(self):
+        print(f"Parent Fitness: {self.parent.fitness}, Child Fitness: {self.child.fitness}")
+
     # def Show_Best(self):
     #     print("\nRe-evaluating the best solution with GUI...")
     #     self.parent.Evaluate("GUI")  # show the best evolved solution
