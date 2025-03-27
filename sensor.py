@@ -34,3 +34,15 @@ class SENSOR: # name of the class
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
