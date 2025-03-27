@@ -1,11 +1,16 @@
 from solution import SOLUTION
 
+import constants as c
+
 class HILL_CLIMBER:
     def __init__(self):
         self.parent = SOLUTION()
 
     def Evolve(self):
         self.parent.Evaluate()
+
+        for currentGeneration in range(c.numberOfGenerations):
+            self.Evolve_For_One_Generation()
 
     # def Evolve(self):
     #     print("Evaluating initial random solution...")
@@ -16,20 +21,32 @@ class HILL_CLIMBER:
     #
     #     for currentGeneration in range(c.numberOfGenerations):
     #         self.Evolve_For_One_Generation()
-    #
+
+    def Evolve_For_One_Generation(self):
+        self.Spawn()
+        self.Mutate()
+        self.child.Evaluate()
+        self.Select()
+
     # def Evolve_For_One_Generation(self):
     #     self.Spawn()
     #     self.Mutate()
     #     self.child.Evaluate("DIRECT")
     #     self.Print()
     #     self.Select()
-    #
+
+    def Spawn(self):
+        pass
     # def Spawn(self):
     #     self.child = copy.deepcopy(self.parent)
-    #
+
+    def Mutate(self):
+        pass
     # def Mutate(self):
     #     self.child.Mutate()
-    #
+
+    def Select(self):
+        pass
     # def Select(self):
     #     if self.child.fitness < self.parent.fitness:
     #         self.parent = self.child  # if the child is better replace the parent value with the child value
