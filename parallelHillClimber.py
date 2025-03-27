@@ -80,4 +80,3 @@ class PARALLEL_HILL_CLIMBER:
             solutions[key].Wait_For_Simulation_To_End()
             # print(f"Parent {key} fitness: {solutions[key].fitness}")
             # print("Fitness:", solutions[key].fitness)  # Optional: debugging
-
