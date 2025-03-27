@@ -18,6 +18,10 @@ class SOLUTION:
 
         os.system("python3 simulate.py")
 
+        fitnessFile = open("fitness.txt", "r")
+        self.fitness = float(fitnessFile.read())
+        fitnessFile.close()
+
     # def Evaluate(self, directOrGUI):
     #     self.Create_World()
     #     self.Generate_Body()
