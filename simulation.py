@@ -8,13 +8,8 @@ import time
 
 class SIMULATION: # name of the class
     # Constructor
-    def __init__(self, directOrGUI):
-        # connect to the physics engine and set up the simulation environment
-        if directOrGUI == "GUI":
-            self.physicsClient = p.connect(p.GUI)  # heads up mode
-        else:
-            self.physicsClient = p.connect(p.DIRECT)  # blind mode
-
+    def __init__(self):
+        self.physicsClient = p.connect(p.GUI)
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
         p.setGravity(c.GRAV_X, c.GRAV_Y, c.GRAV_Z)
 
@@ -46,5 +41,3 @@ class SIMULATION: # name of the class
         # for motor in self.robot.motors.values():
         #     motor.Save_Values()
 
-    def Get_Fitness(self):
-        self.robot.Get_Fitness()
