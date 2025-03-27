@@ -72,7 +72,7 @@ class NEURON:
 
     def Update_Hidden_Or_Motor_Neuron(self, neurons, synapses):
         # Print the initial value of the neuron before updates
-        print("Initial neuron value:", self.Get_Value())
+        # print("Initial neuron value:", self.Get_Value())
 
         # Initialize the neuron's value to zero
         self.Set_Value(0.0)
