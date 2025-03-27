@@ -32,13 +32,13 @@ class SOLUTION:
     #     fitnessFile = open("fitness.txt", "r")
     #     self.fitness = float(fitnessFile.read())
     #     fitnessFile.close()
-    #
-    # def Mutate(self):
-    #     randomRow = random.randint(0, 2)
-    #     randomColumn = random.randint(0,1)
-    #
-    #     old_value = self.weights[randomRow, randomColumn]  # store the old weight
-    #     self.weights[randomRow, randomColumn] = random.random() * 2 - 1  # assign new random value
+
+    def Mutate(self):
+        randomRow = random.randint(0, 2)
+        randomColumn = random.randint(0, 1)
+
+        old_value = self.weights[randomRow, randomColumn]  # store the old weight
+        self.weights[randomRow, randomColumn] = random.random() * 2 - 1  # assign new random value
 
     def Create_World(self):
         # Start generating the SDF file
