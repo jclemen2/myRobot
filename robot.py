@@ -73,4 +73,3 @@ class ROBOT: # name of the class
         # Rename tmp file to final fitness file (Mac/Linux)
         os.system(f"mv {tmpFileName} {finalFileName}")
 
-
