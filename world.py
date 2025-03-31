@@ -1,6 +1,26 @@
-import pybullet as p
+# Creating new file for class world
 
-class WORLD: # name of the class
+# Imports
+import pybullet as p
+import pybullet_data
+import constants as c  # Import constants
+
+class WORLD:
+
     def __init__(self):
-        self.planeId = p.loadURDF("plane.urdf")# Constructor
+
+        """Loads the world environment including the plane and other objects."""
+        # Load floor plane
+        self.planeId = p.loadURDF("plane.urdf")
+
+        # Load the world with additional objects
         p.loadSDF("world.sdf")
+
+
+
+# import pybullet as p
+#
+# class WORLD: # name of the class
+#     def __init__(self):
+#         self.planeId = p.loadURDF("plane.urdf")# Constructor
+#         p.loadSDF("world.sdf")
