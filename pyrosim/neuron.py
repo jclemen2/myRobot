@@ -6,7 +6,7 @@ import pyrosim.pyrosim as pyrosim
 
 import pyrosim.constants as c
 
-class NEURON: 
+class NEURON:
 
     def __init__(self,line):
 
@@ -62,46 +62,32 @@ class NEURON:
 
         # print("")
 
-    def Set_Value(self,value):
+    def Set_Value(self, value):
 
         self.value = value
 
     def Update_Sensor_Neuron(self):
         self.Set_Value(pyrosim.Get_Touch_Sensor_Value_For_Link(self.Get_Link_Name()))
 
-
     def Update_Hidden_Or_Motor_Neuron(self, neurons, synapses):
-        # Print the initial value of the neuron before updates
-        #print("Initial neuron value:", self.Get_Value())
 
-        # Initialize the neuron's value to zero
-        self.Set_Value(0.0)
+        self.Set_Value(0)
 
-        # Iterate through each key in the synapses dictionary
-        for (sourceNeuronName, targetNeuronName) in synapses:
-            # Check if the current synapse arrives at this neuron
-            if targetNeuronName == self.Get_Name():
-                presynapticNeuron = neurons[sourceNeuronName]
-                synapse = synapses[(sourceNeuronName, targetNeuronName)]
+        for synapse_key in synapses:  # Iterate through each key in synapses
+            pre_neuron_name, post_neuron_name = synapse_key  # Unpack the synapse key
 
-                # Get the weight of the current synapse
-                weight = synapse.Get_Weight()
+            if post_neuron_name == self.Get_Name():  # Check if this neuron is the post-synaptic neuron
+                weight = synapses[synapse_key].Get_Weight()  # Get the weight of the synapse
+                pre_neuron_value = neurons[pre_neuron_name].Get_Value()  # Get the value of the pre-synaptic neuron
 
-                # Get the value of the presynaptic neuron
-                presynapticValue = presynapticNeuron.Get_Value()
+                self.Allow_Presynaptic_Neuron_To_Influence_Me(weight, pre_neuron_value)
 
-                # Call Allow_Presynaptic_Neuron_To_Influence_Me
-                self.Allow_Presynaptic_Neuron_To_Influence_Me(weight, presynapticValue)
-
-        # Apply threshold using tanh activation function
         self.Threshold()
 
-    def Allow_Presynaptic_Neuron_To_Influence_Me(self, weight, presynapticValue):
-        # Multiply presynaptic value by synaptic weight and add to the current value
-        self.Add_To_Value(weight * presynapticValue)
+    def Allow_Presynaptic_Neuron_To_Influence_Me(self, weight, pre_neuron_value):
+        self.Add_To_Value(weight * pre_neuron_value)
 
-
-# -------------------------- Private methods -------------------------
+    # -------------------------- Private methods -------------------------
 
     def Determine_Name(self,line):
 
@@ -156,3 +142,162 @@ class NEURON:
     def Threshold(self):
 
         self.value = math.tanh(self.value)
+
+# import math
+#
+# import pybullet
+#
+# import pyrosim.pyrosim as pyrosim
+#
+# import pyrosim.constants as c
+#
+# class NEURON:
+#
+#     def __init__(self,line):
+#
+#         self.Determine_Name(line)
+#
+#         self.Determine_Type(line)
+#
+#         self.Search_For_Link_Name(line)
+#
+#         self.Search_For_Joint_Name(line)
+#
+#         self.Set_Value(0.0)
+#
+#     def Add_To_Value( self, value ):
+#
+#         self.Set_Value( self.Get_Value() + value )
+#
+#     def Get_Joint_Name(self):
+#
+#         return self.jointName
+#
+#     def Get_Link_Name(self):
+#
+#         return self.linkName
+#
+#     def Get_Name(self):
+#
+#         return self.name
+#
+#     def Get_Value(self):
+#
+#         return self.value
+#
+#     def Is_Sensor_Neuron(self):
+#
+#         return self.type == c.SENSOR_NEURON
+#
+#     def Is_Hidden_Neuron(self):
+#
+#         return self.type == c.HIDDEN_NEURON
+#
+#     def Is_Motor_Neuron(self):
+#
+#         return self.type == c.MOTOR_NEURON
+#
+#     def Print(self):
+#
+#         # self.Print_Name()
+#
+#         # self.Print_Type()
+#
+#         self.Print_Value()
+#
+#         # print("")
+#
+#     def Set_Value(self,value):
+#
+#         self.value = value
+#
+#     def Update_Sensor_Neuron(self):
+#         self.Set_Value(pyrosim.Get_Touch_Sensor_Value_For_Link(self.Get_Link_Name()))
+#
+#
+#     def Update_Hidden_Or_Motor_Neuron(self, neurons, synapses):
+#         # Print the initial value of the neuron before updates
+#         #print("Initial neuron value:", self.Get_Value())
+#
+#         # Initialize the neuron's value to zero
+#         self.Set_Value(0.0)
+#
+#         # Iterate through each key in the synapses dictionary
+#         for (sourceNeuronName, targetNeuronName) in synapses:
+#             # Check if the current synapse arrives at this neuron
+#             if targetNeuronName == self.Get_Name():
+#                 presynapticNeuron = neurons[sourceNeuronName]
+#                 synapse = synapses[(sourceNeuronName, targetNeuronName)]
+#
+#                 # Get the weight of the current synapse
+#                 weight = synapse.Get_Weight()
+#
+#                 # Get the value of the presynaptic neuron
+#                 presynapticValue = presynapticNeuron.Get_Value()
+#
+#                 # Call Allow_Presynaptic_Neuron_To_Influence_Me
+#                 self.Allow_Presynaptic_Neuron_To_Influence_Me(weight, presynapticValue)
+#
+#         # Apply threshold using tanh activation function
+#         self.Threshold()
+#
+#     def Allow_Presynaptic_Neuron_To_Influence_Me(self, weight, presynapticValue):
+#         # Multiply presynaptic value by synaptic weight and add to the current value
+#         self.Add_To_Value(weight * presynapticValue)
+#
+#
+# # -------------------------- Private methods -------------------------
+#
+#     def Determine_Name(self,line):
+#
+#         if "name" in line:
+#
+#             splitLine = line.split('"')
+#
+#             self.name = splitLine[1]
+#
+#     def Determine_Type(self,line):
+#
+#         if "sensor" in line:
+#
+#             self.type = c.SENSOR_NEURON
+#
+#         elif "motor" in line:
+#
+#             self.type = c.MOTOR_NEURON
+#
+#         else:
+#
+#             self.type = c.HIDDEN_NEURON
+#
+#     def Print_Name(self):
+#
+#        print(self.name)
+#
+#     def Print_Type(self):
+#
+#        print(self.type)
+#
+#     def Print_Value(self):
+#
+#        print(self.value , " " , end="" )
+#
+#     def Search_For_Joint_Name(self,line):
+#
+#         if "jointName" in line:
+#
+#             splitLine = line.split('"')
+#
+#             self.jointName = splitLine[5]
+#
+#     def Search_For_Link_Name(self,line):
+#
+#         if "linkName" in line:
+#
+#             splitLine = line.split('"')
+#
+#             self.linkName = splitLine[5]
+#
+#     def Threshold(self):
+#
+#         self.value = math.tanh(self.value)
