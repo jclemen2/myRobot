@@ -1,19 +1,14 @@
-# Creating new file for class robot
-
-#Imports
-import pybullet as p
-import pybullet_data
-import pyrosim.pyrosim as pyrosim
-import constants as c  # Import constants
-import os
-# Importing other files
 from sensor import SENSOR
 from motor import MOTOR
-import time
 from pyrosim.neuralNetwork import NEURAL_NETWORK
-#from generate import Generate_Body as GB
-class ROBOT:
 
+import pybullet as p
+import pyrosim.pyrosim as pyrosim
+import constants as c
+import os
+import time
+
+class ROBOT:
     def __init__(self, solutionID):
         self.solutionID = solutionID
         #GB()
@@ -38,14 +33,13 @@ class ROBOT:
             os.system(f"del {brain_filename}")
         else:  # Mac/Linux
             os.system(f"rm {brain_filename}")
+
     def Prepare_To_Sense(self):
         """Initialize the dictionary for sensors."""
         self.sensors = {}
 
         for linkName in pyrosim.linkNamesToIndices:
             self.sensors[linkName] = SENSOR(linkName)   # Create SENSOR instance
-
-
 
     def Prepare_To_Act(self):
         '''Initialize the dictionary for motors'''
@@ -76,102 +70,52 @@ class ROBOT:
         #self.nn.Print()
 
     def Get_Fitness(self):
-        # Get the state of the first link (link zero)
-        stateOfLinkZero = p.getLinkState(self.robotId, 0)
+        # Final Project Code
+        # List of lower leg link names to track
+        lower_leg_links = [
+            "FrontLowerLeg",
+            "BackLowerLeg",
+            "LeftLowerLeg",
+            "RightLowerLeg"
+        ]
 
-        # Get the state of the first link (link zero)
-        positionOfLinkZero = stateOfLinkZero[0]
+        z_values = []
 
-        # Extract the x coordinate (first element) from positionOfLinkZero
-        xCoordinateOfLinkZero = positionOfLinkZero[0]
+        for link_name in lower_leg_links:
+            try:
+                link_index = pyrosim.linkNamesToIndices[link_name]
+                link_state = p.getLinkState(self.robotId, link_index)
+                z = link_state[0][2]  # Extract the z-coordinate
+                z_values.append(z)
+            except KeyError:
+                print(f"Warning: Link {link_name} not found in simulation.")
+                z_values.append(0.0)  # Default to 0.0 if the link isn't found
 
-        # Write the x coordinate to a file (fitness.txt)
+        # Compute average or max height of lower legs
+        fitness = sum(z_values) / len(z_values)
+
+        # Save fitness to file
         tmp_fitness_file = f"tmp{self.solutionID}.txt"
         with open(tmp_fitness_file, "w") as file:
-            file.write(str(xCoordinateOfLinkZero))  # Convert to string and write to file
+            file.write(str(fitness))
+
         time.sleep(0.01)
+        os.rename(tmp_fitness_file, f"fitness{self.solutionID}.txt")
 
-        os.rename("tmp" + str(self.solutionID) + ".txt", "fitness" + str(self.solutionID) + ".txt")
-
-
-
-
-
-# from sensor import SENSOR
-# from motor import MOTOR
-# from pyrosim.neuralNetwork import NEURAL_NETWORK
-#
-# import pybullet as p
-# import pyrosim.pyrosim as pyrosim
-# import os
-#
-# class ROBOT: # name of the class
-#     def __init__(self, solutionID):  # Constructor
-#         self.solutionID = solutionID  # Save the ID for later use
-#         self.robotId = p.loadURDF("body.urdf")
-#
-#         brainFileName = f"brain{solutionID}.nndf"
-#         self.nn = NEURAL_NETWORK(brainFileName)
-#
-#         pyrosim.Prepare_To_Simulate(self.robotId)
-#         print("LINKS IN SIMULATION:", pyrosim.linkNamesToIndices)
-#
-#         # Prepare sensors and motors
-#         self.Prepare_To_Sense()
-#         self.Prepare_To_Act()
-#
-#         # Delete the brain file after reading it
-#         os.system(f"rm {brainFileName}")
-#
-#     def Prepare_To_Sense(self):
-#         # Creates a sensor for each link in the robot
-#         self.sensors = {}  # Initialize sensors dictionary
-#
-#         # Loop through all link names in the robot
-#         for linkName in pyrosim.linkNamesToIndices:
-#             self.sensors[linkName] = SENSOR(linkName)  # Create sensor instance
-#
-#     def Prepare_To_Act(self):
-#         # Creates a motor for each joint in the robot
-#         self.motors = {}  # Initialize sensors dictionary
-#
-#         # Loop through all joint names in the robot
-#         for jointName in pyrosim.jointNamesToIndices:
-#             self.motors[jointName] = MOTOR(jointName)  # Create motor instance
-#
-#     def Sense(self, t):
-#         # Reads sensor values for each link at time step t.
-#         for sensor in self.sensors.values():
-#             sensor.Get_Value(t)  # Pass t to the sensor's Get_Value()
-#
-#     def Act(self, t):
-#         for neuronName in self.nn.Get_Neuron_Names():
-#             if self.nn.Is_Motor_Neuron(neuronName): # Only prints the motor neurons
-#                 jointName = self.nn.Get_Motor_Neurons_Joint(neuronName)
-#                 desiredAngle = self.nn.Get_Value_Of(neuronName)
-#
-#                 # Ensure the jointName is a decoded string, in case it's a byte string
-#                 decoded_joint_name = jointName.decode("utf-8") if isinstance(jointName, bytes) else jointName
-#                 self.motors[decoded_joint_name].Set_Value(self, desiredAngle)
-#
-#     def Think(self):
-#         self.nn.Update()
-#         #self.nn.Print()
-#
-#
-#     def Get_Fitness(self):
-#         stateOfLinkZero = p.getLinkState(self.robotId, 0)
-#         positionOfLinkZero = stateOfLinkZero[0]
-#         xCoordinateOfLinkZero = positionOfLinkZero[0]
-#
-#         # with open("fitness.txt", "w") as f:  # "w" mode overwrites the file, we want to write the fitness to a txt file
-#         #     f.write(str(xCoordinateOfLinkZero))  # Write as string
-#
-#         tmpFileName = f"tmp{self.solutionID}.txt"
-#         finalFileName = f"fitness{self.solutionID}.txt"
-#
-#         with open(tmpFileName, "w") as f:
-#             f.write(str(xCoordinateOfLinkZero))
-#
-#         # Rename tmp file to final fitness file (Mac/Linux)
-#         os.system(f"mv {tmpFileName} {finalFileName}")
+        # Normal Quadruped Code
+        # # Get the state of the first link (link zero)
+        # basePositionAndOrientation = p.getBasePositionAndOrientation(self.robotId)
+        #
+        # # Get the state of the first link (link zero)
+        # basePosition = basePositionAndOrientation[0]
+        #
+        # # Extract the x coordinate (first element) from positionOfLinkZero
+        # xCoordinateOfLinkZero = basePosition[0]
+        #
+        # # Write the x coordinate to a file (fitness.txt)
+        # tmp_fitness_file = f"tmp{self.solutionID}.txt"
+        # with open(tmp_fitness_file, "w") as file:
+        #     file.write(str(xCoordinateOfLinkZero))  # Convert to string and write to file
+        # time.sleep(0.01)
+        #
+        # os.rename("tmp" + str(self.solutionID) + ".txt", "fitness" + str(self.solutionID) + ".txt")
