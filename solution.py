@@ -47,9 +47,14 @@ class SOLUTION:
         os.system(f"rm {fitnessFileName}")
 
     def Mutate(self):
-        randomRow = random.randint(0, 3)
-        randomColumn = random.randint(0, 7)
-        self.weights[randomRow, randomColumn] = random.uniform(-1,1) * 2 - 1
+        noise_strength = 0.95  # adjust if needed
+        noise = numpy.random.normal(loc=0.0, scale=noise_strength, size=self.weights.shape)
+        self.weights += noise
+        self.weights = numpy.clip(self.weights, -1, 1)
+
+        # randomRow = random.randint(0, 3)
+        # randomColumn = random.randint(0, 7)
+        # self.weights[randomRow, randomColumn] = random.uniform(-1,1) * 2 - 1
 
     def Set_ID(self, nextAvailableID):
         self.myID = nextAvailableID
@@ -77,11 +82,11 @@ class SOLUTION:
         # Back Leg
         # Upper
         pyrosim.Send_Joint(name="Torso_BackLeg", parent="Torso", child="BackLeg", type="revolute",
-                           position=[0, -0.5, 1], jointAxis="1 0 0")
+                           position=[0, -0.5, 1], jointAxis="-1 0 0")
         pyrosim.Send_Cube(name="BackLeg", pos=[0, -0.5, 0], size=[0.2, 1, 0.2])
         # Lower
         pyrosim.Send_Joint(name="BackLeg_Lower", parent="BackLeg", child="BackLowerLeg", type="revolute",
-                           position=[0, -1, 0], jointAxis="1 0 0")
+                           position=[0, -1, 0], jointAxis="-1 0 0")
         pyrosim.Send_Cube(name="BackLowerLeg", pos=[0, 0, -0.5], size=[0.2, 0.2, 1])
 
         # Left Leg
@@ -97,11 +102,11 @@ class SOLUTION:
         # Right leg
         # Upper
         pyrosim.Send_Joint(name="Torso_RightLeg", parent="Torso", child="RightLeg", type="revolute",
-                           position=[0.5, 0, 1], jointAxis="0 1 0")  # Rotates forward-backward
+                           position=[0.5, 0, 1], jointAxis="0 -1 0")  # Rotates forward-backward
         pyrosim.Send_Cube(name="RightLeg", pos=[0.5, 0, 0], size=[1, 0.2, 0.2])
         # Lower
         pyrosim.Send_Joint(name="RightLeg_Lower", parent="RightLeg", child="RightLowerLeg", type="revolute",
-                           position=[1, 0, 0], jointAxis="0 1 0")
+                           position=[1, 0, 0], jointAxis="0 -1 0")
         pyrosim.Send_Cube(name="RightLowerLeg", pos=[0, 0, -0.5], size=[0.2, 0.2, 1])
         # Finalize the URDF file
         pyrosim.End()
