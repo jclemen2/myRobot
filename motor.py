@@ -14,8 +14,9 @@ class MOTOR:
 
 
 
-    def Set_Value(self, robot, desiredAngle):
-        """Apply motor control using precomputed values."""
+    def Set_Value(self, robot, desiredAngle, max_force=None):
+        if max_force is None:
+            max_force = c.MAX_FORCE  # Default from constants
 
         jointIndex = pyrosim.jointNamesToIndices[self.jointName]
         (p.setJointMotorControl2
