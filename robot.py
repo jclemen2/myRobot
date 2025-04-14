@@ -122,8 +122,8 @@ class ROBOT:
         # --- Final Fitness ---
         finalFitness = (
                 1.0 * leg_lift_component +
-                1.0 * torso_low_component +
-                3.0 * leg_extension_component  # Boost extension influence
+                3.0 * torso_low_component +
+                1.0 * leg_extension_component  # Boost extension influence
         )
 
         # Debug info
