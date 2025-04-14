@@ -17,7 +17,7 @@ PHASE_OFFSET_FRONT_LEG = 0
 
 GRAVITY = -9.8
 TIMESTEPS = 1000
-MAX_FORCE = 150
+MAX_FORCE = 100
 FRAME_RATE = 1 / 10000
 
 numberOfGenerations = 10  # Increased from 1
