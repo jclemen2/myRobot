@@ -20,7 +20,7 @@ TIMESTEPS = 1000
 MAX_FORCE = 150
 FRAME_RATE = 1 / 10000
 
-numberOfGenerations = 5  # Increased from 1
-populationSize = 5      # Increased from 1
+numberOfGenerations = 10  # Increased from 1
+populationSize = 10      # Increased from 1
 
 motorJointRange = 0.3
