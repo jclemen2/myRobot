@@ -5,12 +5,6 @@ import os
 
 class PARALLEL_HILL_CLIMBER:
     def __init__(self):
-        # Delete all nndf files
-        #if os.name == "nt":  # Windows
-         #   os.system("del brain*.nndf")  # Delete all brain*.nndf files
-        #else:  # Mac/Linux
-         #   os.system("rm brain*.nndf")  # Delete all brain*.nndf files
-
         # Delete all fitness files
         if os.name == "nt":  # Windows
             os.system("del fitness*.txt")  # Delete all fitness*.txt files
@@ -24,10 +18,8 @@ class PARALLEL_HILL_CLIMBER:
             self.parents[i] = SOLUTION(self.nextAvailableID) # Use loop variable as key, store new SOLUTION() as value
             self.nextAvailableID += 1
 
-
     def Evolve(self):
         self.Evaluate(self.parents)
-
         for currentGeneration in range(c.numberOfGenerations):
             self.Evolve_For_One_Generation()
 
@@ -40,7 +32,6 @@ class PARALLEL_HILL_CLIMBER:
 
     def Spawn(self):
         self.children = {}  # Create an empty dictionary to store children
-
         for key in self.parents:
             self.children[key] = copy.deepcopy(self.parents[key])  # Copy parent
             self.children[key].Set_ID(self.nextAvailableID)  # Assign new unique ID
